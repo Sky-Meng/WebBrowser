@@ -6,11 +6,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 
+import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -28,17 +31,17 @@ public class WebBrowser extends JFrame implements HyperlinkListener,ActionListen
 	JToolBar bar=new JToolBar();
 	
 	//建立网页显示页面
-	JTextField jurl=new JTextField(60);  //建立一个新的并设置其初始长度为60
-	JEditorPane jEditorPane1=new JEditorPane();
-	JScrollPane scrollpane=new JScrollPane(jEditorPane1);
+	JTextField jurl=new JTextField(60);  //建立一个新的并设置其初始长度为60,用于地址输入栏
+	JEditorPane jEditorPane1=new JEditorPane();  //Web页的显示器
+	JScrollPane scrollpane=new JScrollPane(jEditorPane1); //滚动条
 	
-	JFileChooser chooser=new JFileChooser();
+	JFileChooser chooser=new JFileChooser(); //文件选择器
 	JFileChooser chooser1=new JFileChooser();
 	String htmlSource;
 	JWindow window=new JWindow(WebBrowser.this);
 	
 	JButton button2=new JButton("窗口还原");
-	Toolkit toolkit=Toolkit.getDefaultToolkit();
+	Toolkit toolkit=Toolkit.getDefaultToolkit(); //java开发工具包 是抽象类
 	
 	//建立菜单栏
 	JMenuBar jMenuBar1= new JMenuBar();
@@ -63,10 +66,29 @@ public class WebBrowser extends JFrame implements HyperlinkListener,ActionListen
 	JMenu helpMenu=new JMenu("帮助（H）");
 	JMenuItem aboutItem=new JMenuItem("关于（A）");
 	
+	//建立工具栏
+	JToolBar toolBar=new JToolBar();
+	//建立工具栏中的按钮主件
+	JButton  picSave=new JButton("另存为");
+	JButton	 picBack=new JButton("后退");
+	JButton  picForward=new JButton("前进");
+	JButton  picView=new JButton("查看源代码");
+	JButton  picExit=new JButton("退出");
+	
+	JLabel label=new JLabel("地址");
+	JButton button=new JButton("转向");
+	
+	Box adress=Box.createHorizontalBox(); //让两个组件之间有一个固定的空间量  布局管理器的一个轻量级容器
+	//利用 ArrayList ,来存放历史地址
+	private ArrayList history=new ArrayList();
+	//整形变量，表示历史记录的访问顺序
+	private int historyIndex;
+	
+	
 	
 	 public WebBrowser() {
-		setTitle("网页浏览器");
-		setResizable(true);  //窗口大小是否可调 true可调   false不可调
+		setTitle("小宇网页浏览器");
+		setResizable(false);  //窗口大小是否可调 true可调   false不可调
 		//setLocation(300,300);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //三种关闭方式
 		
@@ -120,10 +142,28 @@ public class WebBrowser extends JFrame implements HyperlinkListener,ActionListen
 		jMenuBar1.add(helpMenu);
 		setJMenuBar(jMenuBar1);
 		
+		//添加工具栏按钮
+		toolBar.add(picSave);
+		toolBar.addSeparator();
+		toolBar.add(picBack);
+		toolBar.add(picForward);
+		toolBar.addSeparator();
+		toolBar.add(picView);
+		toolBar.addSeparator();
+		toolBar.add(picExit);
+		
+		//添加地址栏及按钮
+		adress.add(label);
+		adress.add(jurl);
+		adress.add(button);
+		bar.add(adress);
 		
 		Container contentpane=getContentPane();
 		scrollpane.setPreferredSize(new Dimension(100, 500));  //设置一个滚动面板
 		contentpane.add(scrollpane, BorderLayout.SOUTH);      //添加到容器中设置方向为下方
+		contentpane.add(bar, BorderLayout.CENTER);			// 将地址栏放到容器的中心位置
+		contentpane.add(toolBar, BorderLayout.NORTH);		//将工具栏放到容器的上方
+		
 		
 		
 	}
