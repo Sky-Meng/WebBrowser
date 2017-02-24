@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.swing.Box;
@@ -17,13 +18,19 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.JWindow;
 import javax.swing.KeyStroke;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.event.AncestorEvent;
+import javax.swing.event.AncestorListener;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
+import javax.swing.text.AbstractDocument.Content;
 
 public class WebBrowser extends JFrame implements HyperlinkListener,ActionListener {
 	
@@ -164,25 +171,262 @@ public class WebBrowser extends JFrame implements HyperlinkListener,ActionListen
 		contentpane.add(bar, BorderLayout.CENTER);			// 将地址栏放到容器的中心位置
 		contentpane.add(toolBar, BorderLayout.NORTH);		//将工具栏放到容器的上方
 		
+		//为主件添加事件监听
+		button.addActionListener(this);
+		jurl.addActionListener(this);
+		saveAsItem.addActionListener(this);
+		picSave.addActionListener(this);
+		exitItem.addActionListener(this);
+		picExit.addActionListener(this);
+		backItem.addActionListener(this);
+		picBack.addActionListener(this);
+		forwardItem.addActionListener(this);
+		picForward.addActionListener(this);
+		fullscreenItem.addActionListener(this);
+	}
+	
+	/**
+	 * 实现监听器接口的actionPerformed 函数
+	 * 主要实现按钮和菜单工具栏
+	 */
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO  自动生成方法存根
+		String url="";
+		//单击转向按钮 getSource()获取单击
+		if (e.getSource()==button) {
+			//获得地址栏内容
+			url=jurl.getText();
+			//url 不为""，并且以http://开头
+			if (url.length()>0&&url.startsWith("http://")) {
+				try {
+					//jEditorPane1主件显示url内容链接
+					jEditorPane1.setPage(url);
+					//将url内容添加到历史记录
+					history.add(url);
+					//historyIndex 的数值设为history对象长度-1
+					historyIndex=history.size()-1;
+					//将页面设置成为编辑状态否则会导致我们误删源码导致网页显示不正常
+					jEditorPane1.setEditable(false);
+					//重新布局
+					jEditorPane1.revalidate();
+				} catch (Exception e1) {
+					//如果链接失败，弹出对话框“无法打开该网页”
+					JOptionPane.showMessageDialog(WebBrowser.this, "无法打开该网页", "小宇网络浏览器", JOptionPane.ERROR_MESSAGE);
+					
+				}
+			}
+			////url 不为""，并且不以http://开头
+			else if (url.length()>0&&!url.startsWith("http://")) {
+				//在url前面添加"http://"
+				url="http://"+url;
+				try {
+					//jEditorPane1主件显示url内容链接
+					jEditorPane1.setPage(url);
+					//将url内容添加到历史记录
+					history.add(url);
+					//historyIndex 的数值设为history对象长度-1
+					historyIndex=history.size()-1;
+					//将页面设置成为编辑状态否则会导致我们误删源码导致网页显示不正常
+					jEditorPane1.setEditable(false);
+					//重新布局
+					jEditorPane1.revalidate();
+				} catch (Exception e1) {
+					//如果链接失败，弹出对话框“无法打开该网页”
+					JOptionPane.showMessageDialog(WebBrowser.this, "无法打开该网页", "小宇网络浏览器", JOptionPane.ERROR_MESSAGE);
+					
+				}
+			}
+			
+			else if (url.length()==0) {
+				JOptionPane.showMessageDialog(WebBrowser.this, "请您输入链接地址", "小宇网络浏览器", JOptionPane.ERROR_MESSAGE);
+
+			}
+			
+		}else if (e.getSource()==jurl) {
+
+			//获得地址栏内容
+			url=jurl.getText();
+			//url 不为""，并且以http://开头
+			if (url.length()>0&&url.startsWith("http://")) {
+				try {
+					//jEditorPane1主件显示url内容链接
+					jEditorPane1.setPage(url);
+					//将url内容添加到历史记录
+					history.add(url);
+					//historyIndex 的数值设为history对象长度-1
+					historyIndex=history.size()-1;
+					//将页面设置成为编辑状态否则会导致我们误删源码导致网页显示不正常
+					jEditorPane1.setEditable(false);
+					//重新布局
+					jEditorPane1.revalidate();
+				} catch (Exception e1) {
+					//如果链接失败，弹出对话框“无法打开该网页”
+					JOptionPane.showMessageDialog(WebBrowser.this, "无法打开该网页", "小宇网络浏览器", JOptionPane.ERROR_MESSAGE);
+					
+				}
+			}
+			////url 不为""，并且不以http://开头
+			else if (url.length()>0&&!url.startsWith("http://")) {
+				//在url前面添加"http://"
+				url="http://"+url;
+				try {
+					//jEditorPane1主件显示url内容链接
+					jEditorPane1.setPage(url);
+					//将url内容添加到历史记录
+					history.add(url);
+					//historyIndex 的数值设为history对象长度-1
+					historyIndex=history.size()-1;
+					//将页面设置成为编辑状态否则会导致我们误删源码导致网页显示不正常
+					jEditorPane1.setEditable(false);
+					//重新布局
+					jEditorPane1.revalidate();
+				} catch (Exception e1) {
+					//如果链接失败，弹出对话框“无法打开该网页”
+					JOptionPane.showMessageDialog(WebBrowser.this, "无法打开该网页", "小宇网络浏览器", JOptionPane.ERROR_MESSAGE);
+					
+				}
+			}
+			
+			else if (url.length()==0) {
+				JOptionPane.showMessageDialog(WebBrowser.this, "请您输入链接地址", "小宇网络浏览器", JOptionPane.ERROR_MESSAGE);
+
+			}
+		}
+		//另存为…
+		else if (e.getSource()==picSave||e.getSource()==saveAsItem) {
+			url=jurl.getText().toString().trim();//trim() 去空白
+			if (url.length()>0&&!url.startsWith("http://")) {
+				url="http://"+url;
+			}if (!url.equals("")) {
+				saveFile();
+			} else {
+				JOptionPane.showMessageDialog(WebBrowser.this, "请您输入链接地址", "小宇网络浏览器", JOptionPane.ERROR_MESSAGE);
+			}
+		}
+		//退出
+		else if (e.getSource()==exitItem||e.getSource()==picExit) {
+			System.exit(0);
+		}
+		//后退
+		else if (e.getSource()==backItem||e.getSource()==picBack) {
+			historyIndex --;
+			if(historyIndex<0)
+				historyIndex=0;
+			url=jurl.getText();
+			try {
+				//获得history对象中本地址之前的访问地址
+				url=(String) history.get(historyIndex);
+				jEditorPane1.setPage(url);
+				jurl.setText(url.toString());
+				//将页面设置成为编辑状态否则会导致我们误删源码导致网页显示不正常
+				jEditorPane1.setEditable(false);
+				//重新布局
+				jEditorPane1.revalidate();
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		//前进
+		else if (rootPaneCheckingEnabled) {
+
+			historyIndex ++;
+			if(historyIndex>=history.size())
+				historyIndex=history.size()-1;
+			url=jurl.getText();
+			try {
+				//获得history对象中本地址之后的访问地址
+				url=(String) history.get(historyIndex);
+				jEditorPane1.setPage(url);
+				jurl.setText(url.toString());
+				//将页面设置成为编辑状态否则会导致我们误删源码导致网页显示不正常
+				jEditorPane1.setEditable(false);
+				//重新布局
+				jEditorPane1.revalidate();
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		
+		}
+		//全屏
+		else if (e.getSource()==fullscreenItem) {
+			boolean add_button2=true;
+			//获得屏幕大小
+			Dimension size=Toolkit.getDefaultToolkit().getScreenSize();
+			Container content=window.getContentPane();
+			content.add(bar, "North");
+			content.add(scrollpane, "Center");
+			
+			//button2 为单击“全屏”后的还原按钮
+			if (add_button2==true) {
+				bar.add(button2);
+			}
+			//为button2添加事件
+			button2.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// TODO Auto-generated method stub
+					WebBrowser.this.setEnabled(true);
+					window.remove(bar);
+					window.remove(toolBar);
+					window.remove(scrollpane);
+					window.setVisible(false);
+					
+					scrollpane.setPreferredSize(new Dimension(100, 500));  
+					getContentPane().add(scrollpane, BorderLayout.SOUTH);      
+					getContentPane().add(bar, BorderLayout.CENTER);			
+					getContentPane().add(toolBar, BorderLayout.NORTH);	
+					bar.remove(button2);
+					pack();
+				}
+			});
+			window.setSize(size);
+			window.setVisible(true);
+		}
 		
 	}
 	
 	
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		// TODO  自动生成方法存根
-		
+	
+	/**
+	 * 
+	 */
+	private void saveFile() {
+		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void hyperlinkUpdate(HyperlinkEvent e) {
 		// TODO  自动生成方法存根
-		
+			try {
+				if (e.getEventType()==HyperlinkEvent.EventType.ACTIVATED)
+				jEditorPane1.setPage(e.getURL());
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 	}
 	
 	public static void main(String[] args) {
+		try {
+			UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnsupportedLookAndFeelException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		  WebBrowser webBrowser=new WebBrowser();
 		  webBrowser.pack();
 		  webBrowser.setVisible(true);
